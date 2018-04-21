@@ -15,10 +15,22 @@ function Intro_scene(pixi) {
 
     let cursor = new Graphics()
         .beginFill(0x000000)
-        .drawRect(10, 40, 10, 20)
+        .drawRect(10, 55, 10, 20)
         .endFill();
 
     scene.addChild(cursor);
+
+    let code_text = [];
+    function add_letter(letter) {
+        let message = new Text(letter);
+        message.position.set(code_text.length * 20, 50);
+        code_text.push(message);
+        scene.addChild(message);
+    };
+    function remove_letter() {
+        let letter = code_text.pop();
+        scene.removeChild(letter);
+    }
 
     scene.update = (delta, now) => {
         // console.log(Math.floor(now) % 2);
@@ -37,11 +49,16 @@ function Intro_scene(pixi) {
             }
 
             if(key === 8) {
-                console.log("delete character");
+                // console.log("delete character");
+                remove_letter();
+                cursor.x = code_text.length * 20;
             }
 
             if(key > 46 && key < 91) {
-                console.log("press:", String.fromCharCode(key));
+                let char = String.fromCharCode(key);
+                // console.log("press:", char);
+                add_letter(char);
+                cursor.x = code_text.length * 20;
             }
         }
     };
