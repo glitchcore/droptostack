@@ -44,7 +44,7 @@ function app(pixi) {
         false
     );
 
-    pixi.ticker.add(delta => update(delta));
+    pixi.ticker.add(delta => update(delta, performance.now()));
 
     select_scene(intro_scene);
 }

@@ -13,7 +13,22 @@ function Intro_scene(pixi) {
         scene.addChild(message);
     }
 
-    scene.update = () => {};
+    let cursor = new Graphics()
+        .beginFill(0x000000)
+        .drawRect(10, 40, 10, 20)
+        .endFill();
+
+    scene.addChild(cursor);
+
+    scene.update = (delta, now) => {
+        // console.log(Math.floor(now) % 2);
+        cursor.visible = (Math.floor(now/500) % 2 > 0);
+        /*if(cursor.visible === true) {
+             false;
+        } else {
+            cursor.visible = true;
+        }*/
+    };
 
     scene.key_handler = (key, isPress) => {
         if(isPress === true) {
