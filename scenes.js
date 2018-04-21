@@ -1,15 +1,22 @@
 function Win_scene(pixi) {
     let scene = new Container();
 
+    let background = new Graphics()
+        .beginFill(0x000000)
+        .drawRect(0, 0, pixi.screen.width, pixi.screen.height)
+        .endFill();
+
+    scene.addChild(background);
+
     {
-        let message = new Text("Stack dropped");
-        message.position.set(5, 5);
+        let message = new Text("Stack dropped", DARK_STYLE_H1);
+        message.position.set(pixi.screen.width/2 - 200, 50);
         scene.addChild(message);
     }
 
     {
-        let message = new Text("press ENTER to restart");
-        message.position.set(5, 20);
+        let message = new Text("press ENTER to restart", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - 200, 150);
         scene.addChild(message);
     }
 
@@ -28,16 +35,23 @@ function Win_scene(pixi) {
 
 function Defeat_scene(pixi) {
     let scene = new Container();
+    
+    let background = new Graphics()
+        .beginFill(0x000000)
+        .drawRect(0, 0, pixi.screen.width, pixi.screen.height)
+        .endFill();
+
+    scene.addChild(background);
 
     {
-        let message = new Text("You dropped");
-        message.position.set(5, 5);
+        let message = new Text("You dropped", DARK_STYLE_H1);
+        message.position.set(pixi.screen.width/2 - 200, 50);
         scene.addChild(message);
     }
 
     {
-        let message = new Text("press ENTER to restart");
-        message.position.set(5, 20);
+        let message = new Text("press ENTER to restart", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - 200, 150);
         scene.addChild(message);
     }
 

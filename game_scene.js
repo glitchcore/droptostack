@@ -6,6 +6,12 @@ function Game_scene(pixi) {
         .drawRect(10, 20, 30, 40)
         .endFill();
 
+    let background = new Graphics()
+        .beginFill(0x000000)
+        .drawRect(0, 0, pixi.screen.width, pixi.screen.height)
+        .endFill();
+    scene.addChild(background);
+
     scene.addChild(rectangle);
 
     let line = new Graphics()
