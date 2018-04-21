@@ -75,6 +75,7 @@ function Person(scene) {
 
     return self;
 }
+
 function Game_scene(pixi) {
     const ground_level = pixi.screen.height;
     const ground_height = 1;
@@ -85,10 +86,12 @@ function Game_scene(pixi) {
 
     let scene = new Container();
 
-    /*let rectangle = new Graphics()
+    /*
+    let rectangle = new Graphics()
         .beginFill(0x66CCFF)
         .drawRect(10, 20, 30, 40)
-        .endFill();*/
+        .endFill();
+    */
 
     let background = new Graphics()
         .beginFill(0x000000)
@@ -122,29 +125,41 @@ function Game_scene(pixi) {
         scene.addChild(message);
     }
 
-    let player_one_lifebar = new Graphics()
+    let player_one_life_bar = new Graphics()
         .beginFill(0xFFFFFF)
-        .drawRect(10, 40, 200, 10)
+        .drawRect(0, 0, 200, 10)
         .endFill();
-    scene.addChild(player_one_lifebar);
+    scene.addChild(player_one_life_bar);
 
-    let player_two_lifebar = new Graphics()
+    player_one_life_bar.x = 10;
+    player_one_life_bar.y = 40;
+
+    let player_two_life_bar = new Graphics()
         .beginFill(0xFF0000)
-        .drawRect(pixi.screen.width - 10, 40, -200, 10)
+        .drawRect(0, 0, -200, 10)
         .endFill();
-    scene.addChild(player_two_lifebar);
+    scene.addChild(player_two_life_bar);
 
-    let player_one_power = new Graphics()
-        .beginFill(0x55DDFF)
-        .drawRect(10, 60, 100, 10)
-        .endFill();
-    scene.addChild(player_one_power);
+    player_two_life_bar.x = pixi.screen.width - 10;
+    player_two_life_bar.y = 40;
 
-    let player_two_power = new Graphics()
+    let player_one_power_bar = new Graphics()
         .beginFill(0x55DDFF)
-        .drawRect(pixi.screen.width - 10, 60, -100, 10)
+        .drawRect(0, 0, 100, 10)
         .endFill();
-    scene.addChild(player_two_power);
+    scene.addChild(player_one_power_bar);
+
+    player_one_power_bar.x = 10;
+    player_one_power_bar.y = 60;
+
+    let player_two_power_bar = new Graphics()
+        .beginFill(0x55DDFF)
+        .drawRect(0, 0, -100, 10)
+        .endFill();
+    scene.addChild(player_two_power_bar);
+
+    player_two_power_bar.x = pixi.screen.width - 10;
+    player_two_power_bar.y = 60;
 
     let player_one = Person(scene);
     // let player_two = Person(scene);
@@ -170,8 +185,6 @@ function Game_scene(pixi) {
             player_one.vy += 1;
             self.grounded = false;
         }
-
-        
 
         /*bounding_box.width = player_one.getBounds().width;
         bounding_box.height = player_one.getBounds().height;
@@ -236,14 +249,19 @@ function Game_scene(pixi) {
         if(key === 9 && isPress) {
             console.log("open cheat zone!");
             cheat_mode = true;
-            popup_scene(cheat_box);
+            popup_scene(cheat_box, {player_power: player_one_power_bar.scale.x});
         }
     }
 
-    scene.select = (cheat) => {
+    scene.select = (params) => {
+        
+
         player_one.vx = 0;
 
         if(cheat_mode) {
+            let cheat = params.cheat;
+            player_one_power_bar.scale.x = params.player_power;
+
             console.log("get cheat:", cheat);
             cheat_mode = false;
 
@@ -274,86 +292,12 @@ function Game_scene(pixi) {
         //line.x = 32;
         //line.y = 32;
         //line.vy = 50;
-    };
 
-    return scene;
-}
+        player_one_power_bar.scale.x = 1.0;
+        player_one_life_bar.scale.x = 1.0;
 
-
-function Cheat_box(pixi) {
-    let scene = new Container();
-
-    const margin_left = 50;
-
-    let background = new Graphics()
-        .beginFill(0x000000)
-        .drawRect(0, 0, 400, 60)
-        .endFill();
-
-    scene.addChild(background);
-
-    let cursor = new Graphics()
-        .beginFill(0xFFFFFF)
-        .drawRect(10, 10, 20, 45)
-        .endFill();
-
-    scene.addChild(cursor);
-
-    let message = new Text(">", DARK_STYLE_H1);
-    message.position.set(0, 0);
-    scene.addChild(message);
-
-    let cheat_text = [];
-    function add_letter(letter) {
-        let message = new Text(letter, DARK_STYLE_H2);
-        message.position.set(margin_left + cheat_text.length * 40, 10);
-        message.letter = letter;
-        
-        scene.addChild(message);
-
-        cheat_text.push(message);
-    };
-    function remove_letter() {
-        let letter = cheat_text.pop();
-        scene.removeChild(letter);
-    }
-
-    function clear_letter() {
-        let code_length = cheat_text.length;
-        for(let i = 0; i < code_length; i++) {
-            remove_letter();
-        }
-    }
-
-    scene.update = (delta, now) => {
-        // console.log(Math.floor(now) % 2);
-        cursor.visible = (Math.floor(now/500) % 2 > 0);
-        cursor.x = margin_left + cheat_text.length * 40;
-    };
-
-    scene.key_handler = (key, isPress) => {
-        if(isPress === true) {
-            if(key === 13) { // pressed enter
-                let cheat = cheat_text.map(item => item.letter).join("");
-                console.log("cheat:", cheat);
-                select_scene(game_scene, cheat);
-            }
-
-            if(key === 8) {
-                // console.log("delete character");
-                remove_letter();
-            }
-
-            if(key > 46 && key < 91 || key === 32) {
-                let char = String.fromCharCode(key);
-                // console.log("press:", char);
-                add_letter(char);
-            }
-        }
-    };
-
-    scene.select = () => {
-        clear_letter();
+        player_two_power_bar.scale.x = 1.0;
+        player_two_life_bar.scale.x = 1.0;
     };
 
     return scene;
