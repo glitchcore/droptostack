@@ -3,16 +3,25 @@
 <head>
   <meta charset="utf-8">
   <title>Drop to stack</title>
-</head>
+  <link rel="stylesheet" href="style.css">
   <script src="pixi.min.js"></script>
+  <script src="aliases.js"></script>
+  <script src="scenes.js"></script>
+  <script src="app.js"></script>
+</head>
 <body>
-  <script type="text/javascript">
-    let type = "WebGL"
-    if(!PIXI.utils.isWebGLSupported()){
-      type = "canvas"
-    }
+    <script type="text/javascript">
+        let pixi = new PIXI.Application({ 
+            width: window.innerWidth * 0.997,
+            height: window.innerHeight * 0.997,
+            antialias: true,    // default: false
+            transparent: true, // default: false
+            resolution: 1       // default: 1
+        });
 
-    PIXI.utils.sayHello(type)
-  </script>
+        document.body.appendChild(pixi.view);
+
+        app(pixi);
+    </script>
 </body>
 </html>
