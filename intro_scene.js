@@ -12,7 +12,7 @@ function Intro_scene(pixi) {
 
 
     {
-        let message = new Text("D R O P  T 0  S T A C K", DARK_STYLE_H1);
+        let message = new Text("D Я O P  T 0  S T A C K", DARK_STYLE_H1);
         message.position.set(pixi.screen.width/2 - margin_left, 50);
         scene.addChild(message);
     }

@@ -75,15 +75,3 @@ function popup_scene(scene, params) {
     key_handler = scene.key_handler;
     scene.select(params);
 }
-
-function close_popup(params) {
-    if(current_scene !== null) {
-        current_scene.visible = false;
-    }
-    back_scene.visible = true;
-    current_scene = back_scene;
-
-    update = back_scene.update;
-    key_handler = back_scene.key_handler;
-}
-

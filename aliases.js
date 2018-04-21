@@ -28,6 +28,19 @@ let DARK_STYLE_H2 = new PIXI.TextStyle({
   dropShadowDistance: 3,
 });
 
+let DARK_STYLE_H4 = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 24,
+  fill: "white",
+  stroke: '#aaaaaa',
+  strokeThickness: 2,
+  dropShadow: true,
+  dropShadowColor: "#cccccc",
+  dropShadowBlur: 10,
+  dropShadowAngle: Math.PI / 7,
+  dropShadowDistance: 3,
+});
+
 function hitTestRectangle(r1, r2) {
 
   //Define the variables we'll need to calculate

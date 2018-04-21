@@ -81,6 +81,8 @@ function Game_scene(pixi) {
 
     const margin = 100;
 
+    let cheat_mode = false;
+
     let scene = new Container();
 
     /*let rectangle = new Graphics()
@@ -100,11 +102,49 @@ function Game_scene(pixi) {
         .endFill();
     scene.addChild(ground);
 
+    /*
     let bounding_box = new Graphics()
         .beginFill(0xEEEEEE)
         .drawRect(0, 0, 10, 10)
         .endFill();
     // scene.addChild(bounding_box);
+    */
+
+    {
+        let message = new Text("Player one", DARK_STYLE_H4);
+        message.position.set(10, 10);
+        scene.addChild(message);
+    }
+
+    {
+        let message = new Text("Player two", DARK_STYLE_H4);
+        message.position.set(pixi.screen.width - 128, 10);
+        scene.addChild(message);
+    }
+
+    let player_one_lifebar = new Graphics()
+        .beginFill(0xFFFFFF)
+        .drawRect(10, 40, 200, 10)
+        .endFill();
+    scene.addChild(player_one_lifebar);
+
+    let player_two_lifebar = new Graphics()
+        .beginFill(0xFF0000)
+        .drawRect(pixi.screen.width - 10, 40, -200, 10)
+        .endFill();
+    scene.addChild(player_two_lifebar);
+
+    let player_one_power = new Graphics()
+        .beginFill(0x55DDFF)
+        .drawRect(10, 60, 100, 10)
+        .endFill();
+    scene.addChild(player_one_power);
+
+    let player_two_power = new Graphics()
+        .beginFill(0x55DDFF)
+        .drawRect(pixi.screen.width - 10, 60, -100, 10)
+        .endFill();
+    scene.addChild(player_two_power);
 
     let player_one = Person(scene);
     // let player_two = Person(scene);
@@ -175,7 +215,7 @@ function Game_scene(pixi) {
         }
 
         if(key === 32 && isPress) {
-            if(player_one.grounded) {
+            if(player_one.vy > -1) {
                 player_one.vy = -10;
             } else {
                 console.log("not grounded");
@@ -195,15 +235,39 @@ function Game_scene(pixi) {
 
         if(key === 9 && isPress) {
             console.log("open cheat zone!");
+            cheat_mode = true;
             popup_scene(cheat_box);
         }
     }
 
-    scene.select = () => {
+    scene.select = (cheat) => {
+        player_one.vx = 0;
+
+        if(cheat_mode) {
+            console.log("get cheat:", cheat);
+            cheat_mode = false;
+
+            if(cheat === "GROW") {
+                player_one.scale.x = 2;
+                player_one.scale.y = 2;
+            }
+
+            if(cheat === "WIN") {
+                select_scene(win_scene);
+            }
+
+            if(cheat === "FLIP") {
+                player_one.rotation += Math.PI/2;
+            }
+
+            return;
+        }
+
+        player_one.scale.x = 1;
+        player_one.scale.y = 1;
+
         player_one.x = 0;
         // player_two.x = 500;
-
-        player_one.vx = 0;
 
         player_one.y = ground_level - player_one.height - 200;
         // player_two.y = ground_level - player_two.height - ground_height/2;
@@ -272,7 +336,7 @@ function Cheat_box(pixi) {
             if(key === 13) { // pressed enter
                 let cheat = cheat_text.map(item => item.letter).join("");
                 console.log("cheat:", cheat);
-                close_popup();
+                select_scene(game_scene, cheat);
             }
 
             if(key === 8) {
