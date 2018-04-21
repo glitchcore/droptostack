@@ -1,29 +1,37 @@
 function Intro_scene(pixi) {
     let scene = new Container();
 
+    let background = new Graphics()
+        .beginFill(0x000000)
+        .drawRect(0, 0, pixi.screen.width, pixi.screen.height)
+        .endFill();
+
+    scene.addChild(background);
+
+
     {
-        let message = new Text("Drop to stack!");
-        message.position.set(5, 5);
+        let message = new Text("Drop to stack", DARK_STYLE_H1);
+        message.position.set(pixi.screen.width/2 - 200, 50);
         scene.addChild(message);
     }
 
     {
-        let message = new Text("Enter you code / press ENTER");
-        message.position.set(5, 20);
+        let message = new Text("Enter you code / press ENTER", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - 200, 150);
         scene.addChild(message);
     }
 
     let cursor = new Graphics()
-        .beginFill(0x000000)
-        .drawRect(10, 55, 10, 20)
+        .beginFill(0xFFFFFF)
+        .drawRect(10, 210, 20, 45)
         .endFill();
 
     scene.addChild(cursor);
 
     let code_text = [];
     function add_letter(letter) {
-        let message = new Text(letter);
-        message.position.set(code_text.length * 20, 50);
+        let message = new Text(letter, DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - 200 + code_text.length * 50, 200);
         message.letter = letter;
         
         scene.addChild(message);
@@ -35,9 +43,17 @@ function Intro_scene(pixi) {
         scene.removeChild(letter);
     }
 
+    function clear_letter() {
+        let code_length = code_text.length;
+        for(let i = 0; i < code_length; i++) {
+            remove_letter();
+        }
+    }
+
     scene.update = (delta, now) => {
         // console.log(Math.floor(now) % 2);
         cursor.visible = (Math.floor(now/500) % 2 > 0);
+        cursor.x = code_text.length * 50 + pixi.screen.width/2 - 200;
         /*if(cursor.visible === true) {
              false;
         } else {
@@ -56,19 +72,19 @@ function Intro_scene(pixi) {
             if(key === 8) {
                 // console.log("delete character");
                 remove_letter();
-                cursor.x = code_text.length * 20;
             }
 
             if(key > 46 && key < 91 || key === 32) {
                 let char = String.fromCharCode(key);
                 // console.log("press:", char);
                 add_letter(char);
-                cursor.x = code_text.length * 20;
             }
         }
     };
 
-    scene.select = () => {};
+    scene.select = () => {
+        clear_letter();
+    };
 
     return scene;
 }

@@ -28,7 +28,7 @@ function app(pixi) {
         "keydown",
         (event) => {
             key_handler(event.keyCode, true);
-            if(event.keyCode !== 116) {
+            if(event.keyCode !== 116 && event.keyCode !== 122) {
                 event.preventDefault();
             }
         },
@@ -46,7 +46,8 @@ function app(pixi) {
 
     pixi.ticker.add(delta => update(delta, performance.now()));
 
-    select_scene(intro_scene);
+    // select_scene(intro_scene);
+    select_scene(game_scene);
 }
 
 let current_scene = null;
