@@ -16,8 +16,18 @@ function Intro_scene(pixi) {
     scene.update = () => {};
 
     scene.key_handler = (key, isPress) => {
-        if(key === 13 && isPress === true) {
-            select_scene(game_scene);
+        if(isPress === true) {
+            if(key === 13) { // pressed enter
+                select_scene(game_scene);
+            }
+
+            if(key === 8) {
+                console.log("delete character");
+            }
+
+            if(key > 46 && key < 91) {
+                console.log("press:", String.fromCharCode(key));
+            }
         }
     };
 
