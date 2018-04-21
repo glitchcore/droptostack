@@ -79,6 +79,8 @@ function Game_scene(pixi) {
     const ground_level = pixi.screen.height;
     const ground_height = 1;
 
+    const margin = 100;
+
     let scene = new Container();
 
     /*let rectangle = new Graphics()
@@ -107,7 +109,11 @@ function Game_scene(pixi) {
     let player_one = Person(scene);
     // let player_two = Person(scene);
 
-    
+    let cheat_box = Cheat_box(pixi);
+    cheat_box.visible = false;
+    cheat_box.x = pixi.screen.width/2 - cheat_box.width/2;
+    cheat_box.y = pixi.screen.height/2 - cheat_box.height/2;
+    scene.addChild(cheat_box);
 
     scene.update = function (delta, now) {
         player_one.update(delta, now);
@@ -189,6 +195,7 @@ function Game_scene(pixi) {
 
         if(key === 9 && isPress) {
             console.log("open cheat zone!");
+            popup_scene(cheat_box);
         }
     }
 
@@ -203,6 +210,86 @@ function Game_scene(pixi) {
         //line.x = 32;
         //line.y = 32;
         //line.vy = 50;
+    };
+
+    return scene;
+}
+
+
+function Cheat_box(pixi) {
+    let scene = new Container();
+
+    const margin_left = 50;
+
+    let background = new Graphics()
+        .beginFill(0x000000)
+        .drawRect(0, 0, 400, 60)
+        .endFill();
+
+    scene.addChild(background);
+
+    let cursor = new Graphics()
+        .beginFill(0xFFFFFF)
+        .drawRect(10, 10, 20, 45)
+        .endFill();
+
+    scene.addChild(cursor);
+
+    let message = new Text(">", DARK_STYLE_H1);
+    message.position.set(0, 0);
+    scene.addChild(message);
+
+    let cheat_text = [];
+    function add_letter(letter) {
+        let message = new Text(letter, DARK_STYLE_H2);
+        message.position.set(margin_left + cheat_text.length * 40, 10);
+        message.letter = letter;
+        
+        scene.addChild(message);
+
+        cheat_text.push(message);
+    };
+    function remove_letter() {
+        let letter = cheat_text.pop();
+        scene.removeChild(letter);
+    }
+
+    function clear_letter() {
+        let code_length = cheat_text.length;
+        for(let i = 0; i < code_length; i++) {
+            remove_letter();
+        }
+    }
+
+    scene.update = (delta, now) => {
+        // console.log(Math.floor(now) % 2);
+        cursor.visible = (Math.floor(now/500) % 2 > 0);
+        cursor.x = margin_left + cheat_text.length * 40;
+    };
+
+    scene.key_handler = (key, isPress) => {
+        if(isPress === true) {
+            if(key === 13) { // pressed enter
+                let cheat = cheat_text.map(item => item.letter).join("");
+                console.log("cheat:", cheat);
+                close_popup();
+            }
+
+            if(key === 8) {
+                // console.log("delete character");
+                remove_letter();
+            }
+
+            if(key > 46 && key < 91 || key === 32) {
+                let char = String.fromCharCode(key);
+                // console.log("press:", char);
+                add_letter(char);
+            }
+        }
+    };
+
+    scene.select = () => {
+        clear_letter();
     };
 
     return scene;

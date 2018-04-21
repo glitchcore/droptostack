@@ -1,7 +1,7 @@
 let update = () => {};
 let key_handler = (key, isPress) => {};
 
-let intro_scene, win_scene, game_scene, defeat_scene;
+let intro_scene, win_scene, game_scene, defeat_scene, cheat_box;
 
 function app(pixi) {
     let stage = pixi.stage;
@@ -51,6 +51,7 @@ function app(pixi) {
 }
 
 let current_scene = null;
+let back_scene = null;
 
 function select_scene(scene, params) {
     if(current_scene !== null) {
@@ -62,5 +63,27 @@ function select_scene(scene, params) {
     update = scene.update;
     key_handler = scene.key_handler;
     scene.select(params);
+}
+
+function popup_scene(scene, params) {
+    back_scene = current_scene;
+    current_scene = scene;
+
+    scene.visible = true;
+
+    update = scene.update;
+    key_handler = scene.key_handler;
+    scene.select(params);
+}
+
+function close_popup(params) {
+    if(current_scene !== null) {
+        current_scene.visible = false;
+    }
+    back_scene.visible = true;
+    current_scene = back_scene;
+
+    update = back_scene.update;
+    key_handler = back_scene.key_handler;
 }
 
