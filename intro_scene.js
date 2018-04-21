@@ -24,8 +24,11 @@ function Intro_scene(pixi) {
     function add_letter(letter) {
         let message = new Text(letter);
         message.position.set(code_text.length * 20, 50);
-        code_text.push(message);
+        message.letter = letter;
+        
         scene.addChild(message);
+
+        code_text.push(message);
     };
     function remove_letter() {
         let letter = code_text.pop();
@@ -45,7 +48,9 @@ function Intro_scene(pixi) {
     scene.key_handler = (key, isPress) => {
         if(isPress === true) {
             if(key === 13) { // pressed enter
-                select_scene(game_scene);
+                let code = code_text.map(item => item.letter).join("");
+                console.log("code:", code)
+                select_scene(game_scene, code);
             }
 
             if(key === 8) {
@@ -54,7 +59,7 @@ function Intro_scene(pixi) {
                 cursor.x = code_text.length * 20;
             }
 
-            if(key > 46 && key < 91) {
+            if(key > 46 && key < 91 || key === 32) {
                 let char = String.fromCharCode(key);
                 // console.log("press:", char);
                 add_letter(char);

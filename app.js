@@ -51,7 +51,7 @@ function app(pixi) {
 
 let current_scene = null;
 
-function select_scene(scene) {
+function select_scene(scene, params) {
     if(current_scene !== null) {
         current_scene.visible = false;
     }
@@ -60,6 +60,6 @@ function select_scene(scene) {
 
     update = scene.update;
     key_handler = scene.key_handler;
-    scene.select();
+    scene.select(params);
 }
 
