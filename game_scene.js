@@ -11,6 +11,8 @@ function Person(scene) {
 
     self = new Container();
 
+    self.grounded = false;
+
     self.vx = 0;
     self.vy = 0;
 
@@ -74,8 +76,8 @@ function Person(scene) {
     return self;
 }
 function Game_scene(pixi) {
-    const ground_level = 400;
-    const ground_height = 400;
+    const ground_level = pixi.screen.height;
+    const ground_height = 1;
 
     let scene = new Container();
 
@@ -115,10 +117,12 @@ function Game_scene(pixi) {
         if(player_one.getBounds().y + player_one.getBounds().height > ground_level) {
             // console.log("collision");
             player_one.vy = 0;
+            self.grounded = true;
 
             player_one.y = ground_level - player_one.getBounds().height + y_diff;
         } else {
             player_one.vy += 1;
+            self.grounded = false;
         }
 
         
@@ -146,7 +150,8 @@ function Game_scene(pixi) {
     }
 
     scene.key_handler = function(key, isPress) {
-        console.log("key:", key, "isPress:", isPress)
+        // console.log("key:", key, "isPress:", isPress)
+
         if(key === 39) {
             if(isPress) {
                 player_one.vx = 2;
@@ -164,9 +169,26 @@ function Game_scene(pixi) {
         }
 
         if(key === 32 && isPress) {
-            if(player_one.vy > 0) {
+            if(player_one.grounded) {
                 player_one.vy = -10;
+            } else {
+                console.log("not grounded");
             }
+        }
+
+        if(key === 16) {
+            if (isPress) {
+                console.log("punch!");
+                player_one.right_arm.rotation = 0;
+                player_one.right_arm.width += 5;
+            } else {
+                player_one.right_arm.rotation = Math.PI/4;
+                player_one.right_arm.width -= 5;
+            }
+        }
+
+        if(key === 9 && isPress) {
+            console.log("open cheat zone!");
         }
     }
 
