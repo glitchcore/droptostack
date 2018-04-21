@@ -28,7 +28,7 @@ function app(pixi) {
         "keydown",
         (event) => {
             key_handler(event.keyCode, true);
-            if(event.keyCode !== 116 && event.keyCode !== 122) {
+            if(event.keyCode !== 116 && event.keyCode !== 122 && event.keyCode !== 123) {
                 event.preventDefault();
             }
         },

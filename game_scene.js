@@ -5,9 +5,14 @@ function Person(scene) {
     const LEG_LENGTH = 30;
     const ASS_Y = 30;
 
+    const LEG_ANGLE = Math.PI/3;
+
     const center_x = LEG_LENGTH;
 
     self = new Container();
+
+    self.vx = 0;
+    self.vy = 0;
 
     self.right_leg = new Graphics()
         .lineStyle(4, 0xFFFFFF, 1)
@@ -51,11 +56,27 @@ function Person(scene) {
 
     self.addChild(self.head);
 
+    self.update = (delta, now) => {
+        if(self.vx !== 0) {
+            self.right_leg.rotation = LEG_ANGLE + Math.sin(now/60) * 0.3;
+            self.left_leg.rotation = -LEG_ANGLE + Math.sin(now/60 + Math.PI/4) * 0.3;
+        } else {
+            self.right_leg.rotation = LEG_ANGLE;
+            self.left_leg.rotation = -LEG_ANGLE;
+        }
+
+        self.x += self.vx;
+        self.y += self.vy;
+    };
+
     scene.addChild(self);
 
     return self;
 }
 function Game_scene(pixi) {
+    const ground_level = 400;
+    const ground_height = 400;
+
     let scene = new Container();
 
     /*let rectangle = new Graphics()
@@ -69,30 +90,53 @@ function Game_scene(pixi) {
         .endFill();
     scene.addChild(background);
 
+    let ground = new Graphics()
+        .beginFill(0xCCCCCC)
+        .drawRect(0, ground_level, pixi.screen.width, ground_height)
+        .endFill();
+    scene.addChild(ground);
+
+    let bounding_box = new Graphics()
+        .beginFill(0xEEEEEE)
+        .drawRect(0, 0, 10, 10)
+        .endFill();
+    // scene.addChild(bounding_box);
+
     let player_one = Person(scene);
-    let player_two = Person(scene);
-    player_two.x = 500;
+    // let player_two = Person(scene);
+
+    
 
     scene.update = function (delta, now) {
-        player_one.right_arm.rotation = Math.PI/4 + Math.sin(now/70) * 0.5;
+        player_one.update(delta, now);
 
-        if(player_one.vx !== 0) {
-            player_one.right_leg.rotation = Math.PI/3 + Math.sin(now/50) * 0.3;
-            player_one.left_leg.rotation = -Math.PI/3 + Math.sin(now/50 + Math.PI/4) * 0.3;
+        let y_diff = player_one.y - player_one.getBounds().y;
+
+        if(player_one.getBounds().y + player_one.getBounds().height > ground_level) {
+            // console.log("collision");
+            player_one.vy = 0;
+
+            player_one.y = ground_level - player_one.getBounds().height + y_diff;
         } else {
-            player_one.right_leg.rotation = Math.PI/3;
-            player_one.left_leg.rotation = -Math.PI/3;
+            player_one.vy += 1;
         }
 
-        player_one.x += player_one.vx;
+        
 
-        player_two.x -= 1;
-        player_two.right_leg.rotation = Math.PI/3 + Math.sin(now/80) * 0.3;
-        player_two.left_leg.rotation = -Math.PI/3 + Math.sin(now/80 + Math.PI/4) * 0.3;
+        /*bounding_box.width = player_one.getBounds().width;
+        bounding_box.height = player_one.getBounds().height;
+        bounding_box.x = player_one.getBounds().x;
+        bounding_box.y = player_one.getBounds().y;*/
 
-        if(hitTestRectangle(player_one, player_two)) {
+        
+        // player_one.right_arm.rotation = Math.PI/4 + Math.sin(now/70) * 0.5;
+        // player_two.x -= 1;
+        // player_two.right_leg.rotation = Math.PI/3 + Math.sin(now/80) * 0.3;
+        // player_two.left_leg.rotation = -Math.PI/3 + Math.sin(now/80 + Math.PI/4) * 0.3;
+
+        /*if(hitTestRectangle(player_one, player_two)) {
             select_scene(win_scene);
-        }
+        }*/
 
 
         /*line.x += 1;
@@ -118,13 +162,22 @@ function Game_scene(pixi) {
                 player_one.vx = 0;
             }
         }
+
+        if(key === 32 && isPress) {
+            if(player_one.vy > 0) {
+                player_one.vy = -10;
+            }
+        }
     }
 
     scene.select = () => {
-        player_two.x = 500;
         player_one.x = 0;
+        // player_two.x = 500;
 
         player_one.vx = 0;
+
+        player_one.y = ground_level - player_one.height - 200;
+        // player_two.y = ground_level - player_two.height - ground_height/2;
         //line.x = 32;
         //line.y = 32;
         //line.vy = 50;
