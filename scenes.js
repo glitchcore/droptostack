@@ -44,7 +44,7 @@ function Defeat_scene(pixi) {
     scene.addChild(background);
 
     {
-        let message = new Text("You dropped", DARK_STYLE_H1);
+        let message = new Text("You dropped", RED_STYLE_H1);
         message.position.set(pixi.screen.width/2 - 200, 50);
         scene.addChild(message);
     }

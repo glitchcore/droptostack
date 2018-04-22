@@ -96,11 +96,17 @@ function Game_scene(pixi) {
     cheat_box.y = pixi.screen.height/2 - cheat_box.height/2;
     scene.addChild(cheat_box);
 
+    ai_person(
+            pixi,
+            player_two, player_two.getBounds(),
+            player_one, player_one.getBounds()
+    );
+
     scene.update = function (delta, now) {
         let bounds_one = player_one.getBounds();
         let bounds_two = player_two.getBounds();
 
-
+        
         
         update_person(pixi, player_one, bounds_one, player_two, bounds_two, ground_level);
         update_person(pixi, player_two, bounds_two, player_one, bounds_one, ground_level);

@@ -166,3 +166,37 @@ function init_person(player) {
     player.scale.x = 1.8;
     player.scale.y = 1.8;
 }
+
+function ai_person(pixi, player, player_bounds, foreign, foreign_bounds) {
+    setInterval(() => {
+        if(player_bounds.x > foreign_bounds.x) {
+            player.fx = (Math.random() < 0.2) ? 6 : -6;
+        } else {
+            player.fx = (Math.random() < 0.2) ? -6 : 6;
+        }
+
+        if(Math.random() < 0.1) {
+            player.fy = -25;
+        }
+
+        
+    }, 200);
+
+    setInterval(() => {
+        if(Math.random() < 0.5) {
+            if(player.x < foreign.x) {
+                player.right_arm.rotation = 0;
+                player.right_arm.scale.x = 1.5;
+            } else {
+                player.left_arm.rotation = 0;
+                player.left_arm.scale.x = 1.5;
+            }
+        } else {
+            player.right_arm.rotation = Math.PI/4;
+            player.left_arm.rotation = -Math.PI/4;
+            player.left_arm.scale.x = 1;
+            player.right_arm.scale.x = 1;
+        }
+    }, 50);
+    
+}

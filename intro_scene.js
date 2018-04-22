@@ -23,6 +23,27 @@ function Intro_scene(pixi) {
         scene.addChild(message);
     }
 
+    {
+        let message = new Text("a r r o w  to move", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - margin_left, 300);
+        scene.addChild(message);
+    }
+    {
+        let message = new Text("T A B  to cheat", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - margin_left, 350);
+        scene.addChild(message);
+    }
+    {
+        let message = new Text("S H I F T  to punch", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - margin_left, 400);
+        scene.addChild(message);
+    }
+    {
+        let message = new Text("S P A C E   to jump", DARK_STYLE_H2);
+        message.position.set(pixi.screen.width/2 - margin_left, 450);
+        scene.addChild(message);
+    }
+
     let cursor = new Graphics()
         .beginFill(0xFFFFFF)
         .drawRect(10, 210, 20, 45)

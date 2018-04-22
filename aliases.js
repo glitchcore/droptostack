@@ -15,6 +15,19 @@ let DARK_STYLE_H1 = new PIXI.TextStyle({
   dropShadowDistance: 3,
 });
 
+let RED_STYLE_H1 = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 56,
+  fill: "red",
+  stroke: '#aaaaaa',
+  strokeThickness: 1,
+  dropShadow: true,
+  dropShadowColor: "#cccccc",
+  dropShadowBlur: 15,
+  dropShadowAngle: Math.PI / 7,
+  dropShadowDistance: 3,
+});
+
 let DARK_STYLE_H2 = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 36,
