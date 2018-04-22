@@ -88,8 +88,19 @@ function Intro_scene(pixi) {
         if(isPress === true) {
             if(key === 13) { // pressed enter
                 let code = code_text.map(item => item.letter).join("");
-                console.log("code:", code)
-                select_scene(game_scene, {address:code});
+                if(code === "") {
+                    code = "0XBEGIN";
+                }
+
+                console.log(code, "->", CHEATS["Address " + code]);
+
+                if(!CHEATS["Address " + code]) {
+                    console.log("no such code");
+                    select_scene(defeat_scene, {address: null});
+                } else {
+                    console.log("code:", code);
+                    select_scene(game_scene, {address:code});
+                }
             }
 
             if(key === 8) {

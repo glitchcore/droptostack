@@ -56,7 +56,14 @@ function Cheat_box(pixi) {
         cursor.visible = (Math.floor(now/500) % 2 > 0);
         cursor.x = margin_left + cheat_text.length * 40;
 
-        player_power_bar.scale.x -= delta/1000;
+        if(player_power_bar.scale.x > 0) {
+            player_power_bar.scale.x -= delta/1000 * 3;
+        } else {
+            select_scene(game_scene, {
+                cheat: "WIN",
+                player_power: player_power_bar.scale.x
+            });
+        }
     };
 
     scene.key_handler = (key, isPress) => {

@@ -20,6 +20,10 @@ function Win_scene(pixi) {
         scene.addChild(message);
     }
 
+    let tip_message = new Text("", BLUE_STYLE_H2);
+    tip_message.position.set(pixi.screen.width/2 - 200, 200);
+    scene.addChild(tip_message);
+
     scene.update = () => {};
 
     scene.key_handler = (key, isPress) => {
@@ -28,7 +32,13 @@ function Win_scene(pixi) {
         }
     };
 
-    scene.select = () => {};
+    scene.select = (address) => {
+        console.log("address message:", address);
+
+        if(CHEATS[address]) {
+            tip_message.text = CHEATS[address].success;
+        }
+    };
 
     return scene;
 }
@@ -55,6 +65,10 @@ function Defeat_scene(pixi) {
         scene.addChild(message);
     }
 
+    let tip_message = new Text("", BLUE_STYLE_H4);
+    tip_message.position.set(pixi.screen.width/2 - 200, 300);
+    scene.addChild(tip_message);
+
     scene.update = () => {};
 
     scene.key_handler = (key, isPress) => {
@@ -63,7 +77,15 @@ function Defeat_scene(pixi) {
         }
     };
 
-    scene.select = () => {};
+    scene.select = (address) => {
+        console.log("address:", address);
+        if(CHEATS[address]) {
+            console.log("message:", CHEATS[address].fail);
+            tip_message.text = CHEATS[address].fail;
+        } else {
+            tip_message.text = "DOnT try strange codes at h0me";
+        }
+    };
 
     return scene;
 }

@@ -41,6 +41,32 @@ let DARK_STYLE_H2 = new PIXI.TextStyle({
   dropShadowDistance: 3,
 });
 
+let BLUE_STYLE_H2 = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 36,
+  fill: "0x55DDFF",
+  stroke: '0x55DDFF',
+  strokeThickness: 2,
+  dropShadow: true,
+  dropShadowColor: "#cccccc",
+  dropShadowBlur: 10,
+  dropShadowAngle: Math.PI / 7,
+  dropShadowDistance: 3,
+});
+
+let BLUE_STYLE_H4 = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 30,
+  fill: "0x55DDFF",
+  stroke: '0x55DDFF',
+  strokeThickness: 2,
+  dropShadow: true,
+  dropShadowColor: "#cccccc",
+  dropShadowBlur: 10,
+  dropShadowAngle: Math.PI / 7,
+  dropShadowDistance: 3,
+});
+
 let DARK_STYLE_H4 = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 24,
@@ -103,3 +129,15 @@ function hitTestRectangle(r1, r2) {
   //`hit` will be either `true` or `false`
   return hit;
 };
+
+const CHEATS = {
+    "Address 0XBEGIN": {
+        success: "use code 0XDEADBEEF to next enemy",
+        fail: "Big but weak... maybe you should un-done your grow-th?",
+    },
+
+    "Address 0XBEGIN": {
+        success: "you are THE B E S T",
+        fail: "code for WIN is so simple",
+    }
+}

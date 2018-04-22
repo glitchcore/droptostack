@@ -62,6 +62,8 @@ function Person(scene, color) {
 
     self.addChild(self.head);
 
+    self.arm_scale = 1;
+
     self.update = (delta, now) => {
 
         if(self.vx !== 0 && Math.abs(self.vy) < 0.5) {
@@ -107,7 +109,7 @@ function update_person(pixi, player, player_bounds, foreign, foreign_bounds, gro
 
     player.vx = player.fx;
 
-    if(hitTestRectangle(player, foreign)) {
+    if(hitTestRectangle(player_bounds, foreign_bounds)) {
         if(player.fx < 0 && (foreign_bounds.x < player_bounds.x)) {
             player.vx = 0;
         }
@@ -121,6 +123,7 @@ function update_person(pixi, player, player_bounds, foreign, foreign_bounds, gro
         ) {
             if(player_bounds.y > foreign_bounds.y) {
                 player.vy = 0;
+                /*
                 if(player_bounds.x > pixi.screen.width/2) {
                     player.vx -= 8;
                     player.x -= 35;
@@ -134,6 +137,7 @@ function update_person(pixi, player, player_bounds, foreign, foreign_bounds, gro
                     foreign.vx -= 8;
                     foreign.x -= 35;
                 }
+                */
             }
         }
     }
@@ -143,7 +147,7 @@ function update_person(pixi, player, player_bounds, foreign, foreign_bounds, gro
         hitTestRectangle(player.left_arm.getBounds(), foreign_bounds) &&
         player.left_arm.rotation == 0
     ) {
-        foreign.life_bar.scale.x -= 0.02;
+        foreign.life_bar.scale.x -= 0.02 * player.arm_scale;
         player.left_arm.rotation = Math.PI/20;
         console.log("hit!");
     }
@@ -152,7 +156,7 @@ function update_person(pixi, player, player_bounds, foreign, foreign_bounds, gro
         hitTestRectangle(player.right_arm.getBounds(), foreign_bounds) &&
         player.right_arm.rotation == 0
     ) {
-        foreign.life_bar.scale.x -= 0.02;
+        foreign.life_bar.scale.x -= 0.02 * player.arm_scale;
         player.right_arm.rotation = -Math.PI/20;
         console.log("hit!");
     }
