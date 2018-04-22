@@ -1,82 +1,3 @@
-function Person(scene) {
-    const HEAD_RADIUS = 10;
-    const SHOULDER_Y = 35;
-    const ARM_LENGTH = 25;
-    const LEG_LENGTH = 30;
-    const ASS_Y = 30;
-
-    const LEG_ANGLE = Math.PI/3;
-
-    const center_x = LEG_LENGTH;
-
-    self = new Container();
-
-    self.grounded = false;
-
-    self.vx = 0;
-    self.vy = 0;
-
-    self.right_leg = new Graphics()
-        .lineStyle(4, 0xFFFFFF, 1)
-        .moveTo(0, 0)
-        .lineTo(LEG_LENGTH, 0);
-    self.right_leg.x = center_x;
-    self.right_leg.y = ASS_Y + SHOULDER_Y;
-    self.right_leg.rotation = Math.PI/4;
-    self.addChild(self.right_leg);
-
-    self.left_leg = new Graphics()
-        .lineStyle(4, 0xFFFFFF, 1)
-        .moveTo(-LEG_LENGTH, 0)
-        .lineTo(0, 0);
-    self.left_leg.x = center_x;
-    self.left_leg.y = ASS_Y + SHOULDER_Y;
-    self.left_leg.rotation = -Math.PI/4;
-    self.addChild(self.left_leg);
-
-    self.right_arm = new Graphics()
-        .lineStyle(4, 0xFFFFFF, 1)
-        .moveTo(0, 0)
-        .lineTo(ARM_LENGTH, 0);
-    self.right_arm.x = center_x;
-    self.right_arm.y = SHOULDER_Y;
-    self.right_arm.rotation = Math.PI/4;
-    self.addChild(self.right_arm);
-
-    self.left_arm = new Graphics()
-        .lineStyle(4, 0xFFFFFF, 1)
-        .moveTo(-ARM_LENGTH, 0)
-        .lineTo(0, 0);
-    self.left_arm.x = center_x;
-    self.left_arm.y = SHOULDER_Y;
-    self.left_arm.rotation = -Math.PI/4;
-    self.addChild(self.left_arm);
-
-    self.head = new Graphics()
-        .lineStyle(4, 0xFFFFFF, 1)
-        .drawCircle(center_x, SHOULDER_Y/2, HEAD_RADIUS);
-
-    self.addChild(self.head);
-
-    self.update = (delta, now) => {
-        // console.log("player vx:", self.vx);
-        if(self.vx !== 0) {
-            self.right_leg.rotation = LEG_ANGLE + Math.sin(now/60) * 0.3;
-            self.left_leg.rotation = -LEG_ANGLE + Math.sin(now/60 + Math.PI/4) * 0.3;
-        } else {
-            self.right_leg.rotation = LEG_ANGLE;
-            self.left_leg.rotation = -LEG_ANGLE;
-        }
-
-        self.x += self.vx;
-        self.y += self.vy;
-    };
-
-    scene.addChild(self);
-
-    return self;
-}
-
 function Game_scene(pixi) {
     const ground_level = pixi.screen.height;
     const ground_height = 1;
@@ -178,7 +99,7 @@ function Game_scene(pixi) {
         // console.log("update");
 
         player_one.update(delta, now);
-        // player_two.update(delta, now);
+        player_two.update(delta, now);
 
         let y_diff_one = player_one.y - player_one.getBounds().y;
 
@@ -193,7 +114,7 @@ function Game_scene(pixi) {
             self.grounded = false;
         }
 
-        /*
+        
         let y_diff_two = player_two.y - player_two.getBounds().y;
 
         if(player_two.getBounds().y + player_two.getBounds().height > ground_level) {
@@ -206,7 +127,6 @@ function Game_scene(pixi) {
             player_two.vy += 1;
             self.grounded = false;
         }
-        */
 
         /*bounding_box.width = player_one.getBounds().width;
         bounding_box.height = player_one.getBounds().height;
@@ -278,7 +198,7 @@ function Game_scene(pixi) {
 
     scene.select = (params) => {
 
-        if(params.address) {
+        if(params && params.address) {
             address_message.setText("Address 0x" +  params.address);
             address_message.y = 10;
             address_message.x = pixi.screen.width/2 - address_message.getBounds().width/2;
@@ -286,7 +206,7 @@ function Game_scene(pixi) {
         
 
         player_one.vx = 0;
-        // player_two.vx = 0;
+        player_two.vx = 0;
 
         if(cheat_mode) {
             let cheat = params.cheat;
@@ -315,7 +235,7 @@ function Game_scene(pixi) {
         player_one.scale.y = 1;
 
         player_one.x = 0;
-        // player_two.x = 500;
+        player_two.x = 500;
 
         player_one.y = ground_level - player_one.height - 200;
         // player_two.y = ground_level - player_two.height - 200;
