@@ -96,37 +96,53 @@ function Game_scene(pixi) {
     scene.addChild(cheat_box);
 
     scene.update = function (delta, now) {
-        // console.log("update");
+        let bounds_one = player_one.getBounds();
+        let bounds_two = player_two.getBounds();
 
-        player_one.update(delta, now);
-        player_two.update(delta, now);
 
-        let y_diff_one = player_one.y - player_one.getBounds().y;
+        /* fly movement */
+        let y_diff_one = player_one.y - bounds_one.y;
 
-        if(player_one.getBounds().y + player_one.getBounds().height > ground_level) {
-            // console.log("collision");
-            player_one.vy = 0;
-            self.grounded = true;
-
-            player_one.y = ground_level - player_one.getBounds().height + y_diff_one;
+        if(bounds_one.y + bounds_one.height > ground_level) {
+            player_one.y = ground_level - bounds_one.height + y_diff_one + 1;
+            player_one.vy = player_one.fy;
         } else {
             player_one.vy += 1;
-            self.grounded = false;
         }
+        player_one.fy = 0;
 
         
-        let y_diff_two = player_two.y - player_two.getBounds().y;
+        let y_diff_two = player_two.y - bounds_two.y;
 
-        if(player_two.getBounds().y + player_two.getBounds().height > ground_level) {
-            // console.log("collision");
-            player_two.vy = 0;
-            self.grounded = true;
-
-            player_two.y = ground_level - player_two.getBounds().height + y_diff_one;
+        if(bounds_two.y + bounds_two.height > ground_level) {
+            player_two.y = ground_level - bounds_two.height + y_diff_two + 1;
+            player_two.vy = player_two.fy;
         } else {
             player_two.vy += 1;
-            self.grounded = false;
         }
+        player_two.fy = 0;
+
+        /* horizontal movement */
+        if(
+            (player_one.fx > 0 && (bounds_two.x - (bounds_one.x + bounds_one.width)) > 0.1) ||
+            (player_one.fx < 0 && (bounds_one.x - (bounds_two.x + bounds_two.width)) > 0.1)
+        ) {
+            
+        } else {
+            player_one.vx = 0;
+        }
+
+        player_one.vx = player_one.fx;
+        if(hitTestRectangle(player_one, player_two)) {
+            if(player_one.fx < 0 && (bounds_two.x < bounds_one.x)) {
+                player_one.vx = 0;
+            }
+
+            if(player_one.fx > 0 && (bounds_one.x < bounds_two.x)) {
+                player_one.vx = 0;
+            }
+        }
+        
 
         /*bounding_box.width = player_one.getBounds().width;
         bounding_box.height = player_one.getBounds().height;
@@ -143,39 +159,31 @@ function Game_scene(pixi) {
             select_scene(win_scene);
         }*/
 
-
-        /*line.x += 1;
-        if(line.x > 100) {
-            select_scene(defeat_scene);
-        }*/
+        player_one.update(delta, now);
+        player_two.update(delta, now);
     }
 
     scene.key_handler = function(key, isPress) {
         // console.log("key:", key, "isPress:", isPress)
 
-        if(key === 39) {
-            if(isPress) {
-                console.log("set vx = 2");
-                player_one.vx = 2;
-            } else {
-                player_one.vx = 0;
-            }
+        if(isPress && key === 39) {
+            player_one.fx = 4;
         }
 
-        if(key === 37) {
-            if(isPress) {
-                player_one.vx = -2;
-            } else {
-                player_one.vx = 0;
-            }
+        if(isPress && key === 37) {
+            player_one.fx = -4;
+        }
+
+        if(!isPress && key === 39 && player_one.fx > 0) {
+            player_one.fx = 0;
+        }
+
+        if(!isPress && key === 37 && player_one.fx < 0) {
+            player_one.fx = 0;
         }
 
         if(key === 32 && isPress) {
-            if(player_one.vy > -1) {
-                player_one.vy = -10;
-            } else {
-                console.log("not grounded");
-            }
+            player_one.fy = -20;
         }
 
         if(key === 16) {
@@ -208,6 +216,12 @@ function Game_scene(pixi) {
         player_one.vx = 0;
         player_two.vx = 0;
 
+        player_one.fx = 0;
+        player_two.fx = 0;
+
+        player_one.fy = 0;
+        player_two.fy = 0;
+
         if(cheat_mode) {
             let cheat = params.cheat;
             player_one_power_bar.scale.x = params.player_power;
@@ -238,13 +252,16 @@ function Game_scene(pixi) {
         player_two.x = 500;
 
         player_one.y = ground_level - player_one.height - 200;
-        // player_two.y = ground_level - player_two.height - 200;
+        player_two.y = ground_level - player_two.height - 200;
 
         player_one_power_bar.scale.x = 1.0;
         player_one_life_bar.scale.x = 1.0;
 
         player_two_power_bar.scale.x = 1.0;
         player_two_life_bar.scale.x = 1.0;
+
+        player_one.rotation = 0;
+        player_two.rotation = 0;
     };
 
     return scene;

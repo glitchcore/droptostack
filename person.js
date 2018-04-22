@@ -16,6 +16,8 @@ function Person(scene) {
     self.vx = 0;
     self.vy = 0;
 
+    self.fx = 0;
+
     self.right_leg = new Graphics()
         .lineStyle(4, 0xFFFFFF, 1)
         .moveTo(0, 0)
@@ -60,9 +62,9 @@ function Person(scene) {
 
     self.update = (delta, now) => {
 
-        if(self.vx !== 0) {
-            self.right_leg.rotation = LEG_ANGLE + Math.sin(now/60) * 0.3;
-            self.left_leg.rotation = -LEG_ANGLE + Math.sin(now/60 + Math.PI/4) * 0.3;
+        if(self.vx !== 0 && Math.abs(self.vy) < 0.5) {
+            self.right_leg.rotation = LEG_ANGLE + Math.sin(now/200 * self.vx) * 0.3;
+            self.left_leg.rotation = -LEG_ANGLE + Math.sin(now/200 * self.vx + Math.PI/5) * 0.3;
         } else {
             self.right_leg.rotation = LEG_ANGLE;
             self.left_leg.rotation = -LEG_ANGLE;
