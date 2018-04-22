@@ -132,11 +132,16 @@ function hitTestRectangle(r1, r2) {
 
 const CHEATS = {
     "Address 0XBEGIN": {
-        success: "use code 0XDEADBEEF to next enemy",
+        success: "use code 0XDEADBEEF for next enemy",
         fail: "Big but weak... maybe you should un-done your grow-th?",
     },
 
-    "Address 0XBEGIN": {
+    "Address 0XDEADBEEF": {
+        success: "you are THE B E S T",
+        fail: "code for WIN is so simple",
+    },
+
+    "YOU ARE CHEATER": {
         success: "you are THE B E S T",
         fail: "code for WIN is so simple",
     }

@@ -106,7 +106,8 @@ function Game_scene(pixi) {
     ai_person(
             pixi,
             player_two, player_two.getBounds(),
-            player_one, player_one.getBounds()
+            player_one, player_one.getBounds(),
+            address_message.text === "Address 0XDEADBEEF"
     );
     
 
@@ -114,7 +115,7 @@ function Game_scene(pixi) {
         let bounds_one = player_one.getBounds();
         let bounds_two = player_two.getBounds();
 
-        
+        if(address_message.text === "Address 0XDEADBEEF") player_two.rotation = Math.PI;
         
         update_person(pixi, player_one, bounds_one, player_two, bounds_two, ground_level);
         update_person(pixi, player_two, bounds_two, player_one, bounds_one, ground_level);
@@ -206,8 +207,10 @@ function Game_scene(pixi) {
         init_person(player_one);
         init_person(player_two);
 
-        // player_two.scale.x = 1.8;
-        // player_two.scale.y = 1.8;
+        player_two.scale.x = 1.8;
+        player_two.scale.y = 1.8;
+        player_one.scale.x = 1.8;
+        player_one.scale.y = 1.8;
 
         if(cheat_mode) {
             let cheat = params.cheat;
@@ -217,8 +220,8 @@ function Game_scene(pixi) {
             cheat_mode = false;
 
             if(cheat === "UNGROW") {
-                player_one.scale.x = 0.4;
-                player_one.scale.y = 0.4;
+                player_one.scale.x = 0.6;
+                player_one.scale.y = 0.6;
             }
 
             if(cheat === "WIN") {
@@ -230,6 +233,7 @@ function Game_scene(pixi) {
             }
 
             if(cheat === "SIMPLE") {
+                address_message.text = "YOU ARE CHEATER";
                 player_one.arm_scale = 3;
             }
 

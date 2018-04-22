@@ -15,7 +15,7 @@ function Win_scene(pixi) {
     }
 
     {
-        let message = new Text("press ENTER to restart", DARK_STYLE_H2);
+        let message = new Text("press ENTER to continuE", DARK_STYLE_H2);
         message.position.set(pixi.screen.width/2 - 200, 150);
         scene.addChild(message);
     }

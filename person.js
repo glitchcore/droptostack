@@ -166,12 +166,9 @@ function init_person(player) {
     player.vx = 0;
     player.fx = 0;
     player.fy = 0;
-        
-    player.scale.x = 1.8;
-    player.scale.y = 1.8;
 }
 
-function ai_person(pixi, player, player_bounds, foreign, foreign_bounds) {
+function ai_person(pixi, player, player_bounds, foreign, foreign_bounds, superspeed) {
     setInterval(() => {
         if(player_bounds.x > foreign_bounds.x) {
             player.fx = (Math.random() < 0.2) ? 6 : -6;
@@ -188,7 +185,7 @@ function ai_person(pixi, player, player_bounds, foreign, foreign_bounds) {
 
     setInterval(() => {
         if(Math.random() < 0.5) {
-            if(player.x < foreign.x) {
+            if(player.x < foreign.x ^ player.rotation > 0) {
                 player.right_arm.rotation = 0;
                 player.right_arm.scale.x = 1.5;
             } else {
@@ -201,6 +198,6 @@ function ai_person(pixi, player, player_bounds, foreign, foreign_bounds) {
             player.left_arm.scale.x = 1;
             player.right_arm.scale.x = 1;
         }
-    }, 50);
+    }, superspeed ? 50 : 50);
     
 }
