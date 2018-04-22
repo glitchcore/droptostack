@@ -86,6 +86,8 @@ function Game_scene(pixi) {
 
     let scene = new Container();
 
+    let address = "4f5d23"
+
     /*
     let rectangle = new Graphics()
         .beginFill(0x66CCFF)
@@ -122,6 +124,13 @@ function Game_scene(pixi) {
     {
         let message = new Text("Player two", DARK_STYLE_H4);
         message.position.set(pixi.screen.width - 128, 10);
+        scene.addChild(message);
+    }
+
+    {
+        let message = new Text("Address 0x" +  address, DARK_STYLE_H2);
+        message.y = 10;
+        message.x = pixi.screen.width/2 - message.getBounds().width/2;
         scene.addChild(message);
     }
 
