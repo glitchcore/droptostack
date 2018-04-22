@@ -42,7 +42,6 @@ let DARK_STYLE_H4 = new PIXI.TextStyle({
 });
 
 function hitTestRectangle(r1, r2) {
-
   //Define the variables we'll need to calculate
   let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 

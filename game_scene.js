@@ -86,8 +86,8 @@ function Game_scene(pixi) {
     player_two_power_bar.x = pixi.screen.width - 10;
     player_two_power_bar.y = 60;
 
-    let player_one = Person(scene);
-    let player_two = Person(scene);
+    let player_one = Person(scene, 0xFFFFFF);
+    let player_two = Person(scene, 0xFF0000);
 
     let cheat_box = Cheat_box(pixi);
     cheat_box.visible = false;
@@ -143,12 +143,38 @@ function Game_scene(pixi) {
             }
 
             if(
-                Math.abs(bounds_one.x - bounds_two.x) < bounds_one.width - 4
+                Math.abs(bounds_one.x - bounds_two.x) < bounds_one.width/2
             ) {
                 player_one.vy = 0;
                 player_one.vx += 5;
                 player_one.x += 10;
             }
+        }
+
+        if(
+            hitTestRectangle(player_one.left_arm.getBounds(), bounds_two) &&
+            player_one.left_arm.rotation == 0
+        ) {
+            player_two_life_bar.scale.x -= 0.02;
+            player_one.left_arm.rotation = Math.PI/20;
+            console.log("hit!");
+        }
+
+        if(
+            hitTestRectangle(player_one.right_arm.getBounds(), bounds_two) &&
+            player_one.right_arm.rotation == 0
+        ) {
+            player_two_life_bar.scale.x -= 0.02;
+            player_one.right_arm.rotation = -Math.PI/20;
+            console.log("hit!");
+        }
+
+        if(player_two_life_bar.scale.x < 0) {
+            select_scene(win_scene);
+        }
+
+        if(player_one_life_bar.scale.x < 0) {
+            select_scene(defeat_scene);
         }
         
 
@@ -175,11 +201,11 @@ function Game_scene(pixi) {
         // console.log("key:", key, "isPress:", isPress)
 
         if(isPress && key === 39) {
-            player_one.fx = 4;
+            player_one.fx = 6;
         }
 
         if(isPress && key === 37) {
-            player_one.fx = -4;
+            player_one.fx = -6;
         }
 
         if(!isPress && key === 39 && player_one.fx > 0) {
@@ -191,17 +217,24 @@ function Game_scene(pixi) {
         }
 
         if(key === 32 && isPress) {
-            player_one.fy = -20;
+            player_one.fy = -25;
         }
 
         if(key === 16) {
             if (isPress) {
                 console.log("punch!");
-                player_one.right_arm.rotation = 0;
-                player_one.right_arm.width += 5;
+                if(player_one.x < player_two.x) {
+                    player_one.right_arm.rotation = 0;
+                    player_one.right_arm.scale.x = 1.5;
+                } else {
+                    player_one.left_arm.rotation = 0;
+                    player_one.left_arm.scale.x = 1.5;
+                }
             } else {
                 player_one.right_arm.rotation = Math.PI/4;
-                player_one.right_arm.width -= 5;
+                player_one.left_arm.rotation = -Math.PI/4;
+                player_one.left_arm.scale.x = 1;
+                player_one.right_arm.scale.x = 1;
             }
         }
 
@@ -255,6 +288,11 @@ function Game_scene(pixi) {
 
         player_one.scale.x = 1;
         player_one.scale.y = 1;
+
+        player_one.right_arm.rotation = Math.PI/4;
+        player_one.left_arm.rotation = -Math.PI/4;
+        player_one.left_arm.scale.x = 1;
+        player_one.right_arm.scale.x = 1;
 
         player_one.x = 0;
         player_two.x = 500;
