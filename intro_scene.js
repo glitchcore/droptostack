@@ -68,7 +68,7 @@ function Intro_scene(pixi) {
             if(key === 13) { // pressed enter
                 let code = code_text.map(item => item.letter).join("");
                 console.log("code:", code)
-                select_scene(game_scene, code);
+                select_scene(game_scene, {address:code});
             }
 
             if(key === 8) {

@@ -46,8 +46,8 @@ function app(pixi) {
 
     pixi.ticker.add(delta => update(delta, performance.now()));
 
-    // select_scene(intro_scene);
-    select_scene(game_scene);
+    select_scene(intro_scene);
+    // select_scene(game_scene);
 }
 
 let current_scene = null;

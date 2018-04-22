@@ -59,6 +59,7 @@ function Person(scene) {
     self.addChild(self.head);
 
     self.update = (delta, now) => {
+        // console.log("player vx:", self.vx);
         if(self.vx !== 0) {
             self.right_leg.rotation = LEG_ANGLE + Math.sin(now/60) * 0.3;
             self.left_leg.rotation = -LEG_ANGLE + Math.sin(now/60 + Math.PI/4) * 0.3;
@@ -85,8 +86,6 @@ function Game_scene(pixi) {
     let cheat_mode = false;
 
     let scene = new Container();
-
-    let address = "4f5d23"
 
     /*
     let rectangle = new Graphics()
@@ -127,12 +126,8 @@ function Game_scene(pixi) {
         scene.addChild(message);
     }
 
-    {
-        let message = new Text("Address 0x" +  address, DARK_STYLE_H2);
-        message.y = 10;
-        message.x = pixi.screen.width/2 - message.getBounds().width/2;
-        scene.addChild(message);
-    }
+    let address_message = new Text("", DARK_STYLE_H2);
+    scene.addChild(address_message);
 
     let player_one_life_bar = new Graphics()
         .beginFill(0xFFFFFF)
@@ -171,7 +166,7 @@ function Game_scene(pixi) {
     player_two_power_bar.y = 60;
 
     let player_one = Person(scene);
-    // let player_two = Person(scene);
+    let player_two = Person(scene);
 
     let cheat_box = Cheat_box(pixi);
     cheat_box.visible = false;
@@ -180,20 +175,38 @@ function Game_scene(pixi) {
     scene.addChild(cheat_box);
 
     scene.update = function (delta, now) {
-        player_one.update(delta, now);
+        // console.log("update");
 
-        let y_diff = player_one.y - player_one.getBounds().y;
+        player_one.update(delta, now);
+        // player_two.update(delta, now);
+
+        let y_diff_one = player_one.y - player_one.getBounds().y;
 
         if(player_one.getBounds().y + player_one.getBounds().height > ground_level) {
             // console.log("collision");
             player_one.vy = 0;
             self.grounded = true;
 
-            player_one.y = ground_level - player_one.getBounds().height + y_diff;
+            player_one.y = ground_level - player_one.getBounds().height + y_diff_one;
         } else {
             player_one.vy += 1;
             self.grounded = false;
         }
+
+        /*
+        let y_diff_two = player_two.y - player_two.getBounds().y;
+
+        if(player_two.getBounds().y + player_two.getBounds().height > ground_level) {
+            // console.log("collision");
+            player_two.vy = 0;
+            self.grounded = true;
+
+            player_two.y = ground_level - player_two.getBounds().height + y_diff_one;
+        } else {
+            player_two.vy += 1;
+            self.grounded = false;
+        }
+        */
 
         /*bounding_box.width = player_one.getBounds().width;
         bounding_box.height = player_one.getBounds().height;
@@ -222,6 +235,7 @@ function Game_scene(pixi) {
 
         if(key === 39) {
             if(isPress) {
+                console.log("set vx = 2");
                 player_one.vx = 2;
             } else {
                 player_one.vx = 0;
@@ -263,9 +277,16 @@ function Game_scene(pixi) {
     }
 
     scene.select = (params) => {
+
+        if(params.address) {
+            address_message.setText("Address 0x" +  params.address);
+            address_message.y = 10;
+            address_message.x = pixi.screen.width/2 - address_message.getBounds().width/2;
+        }
         
 
         player_one.vx = 0;
+        // player_two.vx = 0;
 
         if(cheat_mode) {
             let cheat = params.cheat;
@@ -297,10 +318,7 @@ function Game_scene(pixi) {
         // player_two.x = 500;
 
         player_one.y = ground_level - player_one.height - 200;
-        // player_two.y = ground_level - player_two.height - ground_height/2;
-        //line.x = 32;
-        //line.y = 32;
-        //line.vy = 50;
+        // player_two.y = ground_level - player_two.height - 200;
 
         player_one_power_bar.scale.x = 1.0;
         player_one_life_bar.scale.x = 1.0;
