@@ -80,3 +80,89 @@ function Person(scene, color) {
 
     return self;
 }
+
+
+function update_person(pixi, player, player_bounds, foreign, foreign_bounds, ground_level) {
+    /* fly movement */
+
+    let y_diff = player.y - player_bounds.y;
+
+    if(player_bounds.y + player_bounds.height > ground_level) {
+        player.y = ground_level - player_bounds.height + y_diff + 1;
+        player.vy = player.fy;
+    } else {
+        player.vy += 1.5;
+    }
+    player.fy = 0;
+
+    /* horizontal movement */
+    if(
+        (player.fx > 0 && (foreign_bounds.x - (player_bounds.x + player_bounds.width)) > 0.1) ||
+        (player.fx < 0 && (player_bounds.x - (foreign_bounds.x + foreign_bounds.width)) > 0.1)
+    ) {
+        
+    } else {
+        player.vx = 0;
+    }
+
+    player.vx = player.fx;
+
+    if(hitTestRectangle(player, foreign)) {
+        if(player.fx < 0 && (foreign_bounds.x < player_bounds.x)) {
+            player.vx = 0;
+        }
+
+        if(player.fx > 0 && (player_bounds.x < foreign_bounds.x)) {
+            player.vx = 0;
+        }
+
+        if(
+            Math.abs(player_bounds.x - foreign_bounds.x) < player_bounds.width/2
+        ) {
+            if(player_bounds.y > foreign_bounds.y) {
+                player.vy = 0;
+                if(player_bounds.x > pixi.screen.width/2) {
+                    player.vx -= 8;
+                    player.x -= 35;
+
+                    foreign.vx += 8;
+                    foreign.x += 35;
+                } else {
+                    player.vx += 8;
+                    player.x += 35;
+
+                    foreign.vx -= 8;
+                    foreign.x -= 35;
+                }
+            }
+        }
+    }
+
+    /* hit */
+    if(
+        hitTestRectangle(player.left_arm.getBounds(), foreign_bounds) &&
+        player.left_arm.rotation == 0
+    ) {
+        foreign.life_bar.scale.x -= 0.02;
+        player.left_arm.rotation = Math.PI/20;
+        console.log("hit!");
+    }
+
+    if(
+        hitTestRectangle(player.right_arm.getBounds(), foreign_bounds) &&
+        player.right_arm.rotation == 0
+    ) {
+        foreign.life_bar.scale.x -= 0.02;
+        player.right_arm.rotation = -Math.PI/20;
+        console.log("hit!");
+    }
+}
+
+function init_person(player) {
+    player.vx = 0;
+    player.fx = 0;
+    player.fy = 0;
+        
+    player.scale.x = 1.8;
+    player.scale.y = 1.8;
+}

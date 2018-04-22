@@ -27,6 +27,10 @@ function Game_scene(pixi) {
         .endFill();
     scene.addChild(ground);
 
+    let player_one = Person(scene, 0xFFFFFF);
+    let player_two = Person(scene, 0xFF0000);
+
+
     /*
     let bounding_box = new Graphics()
         .beginFill(0xEEEEEE)
@@ -50,44 +54,41 @@ function Game_scene(pixi) {
     let address_message = new Text("", DARK_STYLE_H2);
     scene.addChild(address_message);
 
-    let player_one_life_bar = new Graphics()
+    player_one.life_bar = new Graphics()
         .beginFill(0xFFFFFF)
         .drawRect(0, 0, 200, 10)
         .endFill();
-    scene.addChild(player_one_life_bar);
+    scene.addChild(player_one.life_bar);
 
-    player_one_life_bar.x = 10;
-    player_one_life_bar.y = 40;
+    player_one.life_bar.x = 10;
+    player_one.life_bar.y = 40;
 
-    let player_two_life_bar = new Graphics()
+    player_two.life_bar = new Graphics()
         .beginFill(0xFF0000)
         .drawRect(0, 0, -200, 10)
         .endFill();
-    scene.addChild(player_two_life_bar);
+    scene.addChild(player_two.life_bar);
 
-    player_two_life_bar.x = pixi.screen.width - 10;
-    player_two_life_bar.y = 40;
+    player_two.life_bar.x = pixi.screen.width - 10;
+    player_two.life_bar.y = 40;
 
-    let player_one_power_bar = new Graphics()
+    player_one.power_bar = new Graphics()
         .beginFill(0x55DDFF)
         .drawRect(0, 0, 100, 10)
         .endFill();
-    scene.addChild(player_one_power_bar);
+    scene.addChild(player_one.power_bar);
 
-    player_one_power_bar.x = 10;
-    player_one_power_bar.y = 60;
+    player_one.power_bar.x = 10;
+    player_one.power_bar.y = 60;
 
-    let player_two_power_bar = new Graphics()
+    player_two.power_bar = new Graphics()
         .beginFill(0x55DDFF)
         .drawRect(0, 0, -100, 10)
         .endFill();
-    scene.addChild(player_two_power_bar);
+    scene.addChild(player_two.power_bar);
 
-    player_two_power_bar.x = pixi.screen.width - 10;
-    player_two_power_bar.y = 60;
-
-    let player_one = Person(scene, 0xFFFFFF);
-    let player_two = Person(scene, 0xFF0000);
+    player_two.power_bar.x = pixi.screen.width - 10;
+    player_two.power_bar.y = 60;
 
     let cheat_box = Cheat_box(pixi);
     cheat_box.visible = false;
@@ -100,80 +101,15 @@ function Game_scene(pixi) {
         let bounds_two = player_two.getBounds();
 
 
-        /* fly movement */
-        let y_diff_one = player_one.y - bounds_one.y;
-
-        if(bounds_one.y + bounds_one.height > ground_level) {
-            player_one.y = ground_level - bounds_one.height + y_diff_one + 1;
-            player_one.vy = player_one.fy;
-        } else {
-            player_one.vy += 1.5;
-        }
-        player_one.fy = 0;
-
         
-        let y_diff_two = player_two.y - bounds_two.y;
+        update_person(pixi, player_one, bounds_one, player_two, bounds_two, ground_level);
+        update_person(pixi, player_two, bounds_two, player_one, bounds_one, ground_level);
 
-        if(bounds_two.y + bounds_two.height > ground_level) {
-            player_two.y = ground_level - bounds_two.height + y_diff_two + 1;
-            player_two.vy = player_two.fy;
-        } else {
-            player_two.vy += 1.5;
-        }
-        player_two.fy = 0;
-
-        /* horizontal movement */
-        if(
-            (player_one.fx > 0 && (bounds_two.x - (bounds_one.x + bounds_one.width)) > 0.1) ||
-            (player_one.fx < 0 && (bounds_one.x - (bounds_two.x + bounds_two.width)) > 0.1)
-        ) {
-            
-        } else {
-            player_one.vx = 0;
-        }
-
-        player_one.vx = player_one.fx;
-        if(hitTestRectangle(player_one, player_two)) {
-            if(player_one.fx < 0 && (bounds_two.x < bounds_one.x)) {
-                player_one.vx = 0;
-            }
-
-            if(player_one.fx > 0 && (bounds_one.x < bounds_two.x)) {
-                player_one.vx = 0;
-            }
-
-            if(
-                Math.abs(bounds_one.x - bounds_two.x) < bounds_one.width/2
-            ) {
-                player_one.vy = 0;
-                player_one.vx += 5;
-                player_one.x += 10;
-            }
-        }
-
-        if(
-            hitTestRectangle(player_one.left_arm.getBounds(), bounds_two) &&
-            player_one.left_arm.rotation == 0
-        ) {
-            player_two_life_bar.scale.x -= 0.02;
-            player_one.left_arm.rotation = Math.PI/20;
-            console.log("hit!");
-        }
-
-        if(
-            hitTestRectangle(player_one.right_arm.getBounds(), bounds_two) &&
-            player_one.right_arm.rotation == 0
-        ) {
-            player_two_life_bar.scale.x -= 0.02;
-            player_one.right_arm.rotation = -Math.PI/20;
-            console.log("hit!");
-        }
-
-        if(player_two_life_bar.scale.x < 0) {
+        if(player_two.life_bar.scale.x < 0) {
             select_scene(win_scene);
         }
 
-        if(player_one_life_bar.scale.x < 0) {
+        if(player_one.life_bar.scale.x < 0) {
             select_scene(defeat_scene);
         }
         
@@ -241,7 +177,7 @@ function Game_scene(pixi) {
         if(key === 9 && isPress) {
             console.log("open cheat zone!");
             cheat_mode = true;
-            popup_scene(cheat_box, {player_power: player_one_power_bar.scale.x});
+            popup_scene(cheat_box, {player_power: player_one.power_bar.scale.x});
         }
     }
 
@@ -252,20 +188,16 @@ function Game_scene(pixi) {
             address_message.y = 10;
             address_message.x = pixi.screen.width/2 - address_message.getBounds().width/2;
         }
-        
 
-        player_one.vx = 0;
-        player_two.vx = 0;
+        init_person(player_one);
+        init_person(player_two);
 
-        player_one.fx = 0;
-        player_two.fx = 0;
-
-        player_one.fy = 0;
-        player_two.fy = 0;
+        // player_two.scale.x = 1.8;
+        // player_two.scale.y = 1.8;
 
         if(cheat_mode) {
             let cheat = params.cheat;
-            player_one_power_bar.scale.x = params.player_power;
+            player_one.power_bar.scale.x = params.player_power;
 
             console.log("get cheat:", cheat);
             cheat_mode = false;
@@ -286,13 +218,15 @@ function Game_scene(pixi) {
             return;
         }
 
-        player_one.scale.x = 1;
-        player_one.scale.y = 1;
-
         player_one.right_arm.rotation = Math.PI/4;
+        player_one.right_arm.scale.x = 1;
         player_one.left_arm.rotation = -Math.PI/4;
         player_one.left_arm.scale.x = 1;
-        player_one.right_arm.scale.x = 1;
+
+        player_two.right_arm.rotation = Math.PI/4;
+        player_two.right_arm.scale.x = 1;
+        player_two.left_arm.rotation = -Math.PI/4;
+        player_two.left_arm.scale.x = 1;
 
         player_one.x = 0;
         player_two.x = 500;
@@ -300,11 +234,11 @@ function Game_scene(pixi) {
         player_one.y = ground_level - player_one.height - 200;
         player_two.y = ground_level - player_two.height - 200;
 
-        player_one_power_bar.scale.x = 1.0;
-        player_one_life_bar.scale.x = 1.0;
+        player_one.power_bar.scale.x = 1.0;
+        player_one.life_bar.scale.x = 1.0;
 
-        player_two_power_bar.scale.x = 1.0;
-        player_two_life_bar.scale.x = 1.0;
+        player_two.power_bar.scale.x = 1.0;
+        player_two.life_bar.scale.x = 1.0;
 
         player_one.rotation = 0;
         player_two.rotation = 0;
