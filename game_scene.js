@@ -107,7 +107,7 @@ function Game_scene(pixi) {
             player_one.y = ground_level - bounds_one.height + y_diff_one + 1;
             player_one.vy = player_one.fy;
         } else {
-            player_one.vy += 1;
+            player_one.vy += 1.5;
         }
         player_one.fy = 0;
 
@@ -118,7 +118,7 @@ function Game_scene(pixi) {
             player_two.y = ground_level - bounds_two.height + y_diff_two + 1;
             player_two.vy = player_two.fy;
         } else {
-            player_two.vy += 1;
+            player_two.vy += 1.5;
         }
         player_two.fy = 0;
 
@@ -140,6 +140,14 @@ function Game_scene(pixi) {
 
             if(player_one.fx > 0 && (bounds_one.x < bounds_two.x)) {
                 player_one.vx = 0;
+            }
+
+            if(
+                Math.abs(bounds_one.x - bounds_two.x) < bounds_one.width - 4
+            ) {
+                player_one.vy = 0;
+                player_one.vx += 5;
+                player_one.x += 10;
             }
         }
         
